@@ -2,4 +2,9 @@
     <dimen name="fab_margin">16dp</dimen>
     <dimen name="FAB_WIDTH">48dp</dimen>
     <dimen name="FAB_HEIGHT">48dp</dimen>
+    <dimen name="standard_margin">16dp</dimen>
+    <dimen name="small_margin">8dp</dimen>
+    <dimen name="small_text_size">12sp</dimen>
+    <dimen name="normal_text_size">18sp</dimen>
+    <dimen name="large_text_size">24sp</dimen>
 </resources>

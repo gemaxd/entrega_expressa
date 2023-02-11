@@ -7,7 +7,7 @@
 
     <fragment
         android:id="@+id/FirstFragment"
-        android:name="com.jessemanarim.entregaexpressa.presentation.FirstFragment"
+        android:name="com.jessemanarim.entregaexpressa.feature_entrega.presentation.delivery_list.DeliveriesListFragment"
         android:label="@string/first_fragment_label"
         tools:layout="@layout/fragment_first">
 
@@ -17,9 +17,9 @@
     </fragment>
     <fragment
         android:id="@+id/SecondFragment"
-        android:name="com.jessemanarim.entregaexpressa.presentation.SecondFragment"
+        android:name="com.jessemanarim.entregaexpressa.feature_entrega.presentation.delivery_create.DeliveryCreationFragment"
         android:label="@string/second_fragment_label"
-        tools:layout="@layout/fragment_second">
+        tools:layout="@layout/fragment_delivery_creation">
 
         <action
             android:id="@+id/action_SecondFragment_to_FirstFragment"

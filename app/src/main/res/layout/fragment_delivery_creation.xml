@@ -1,0 +1,294 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_margin="@dimen/small_margin"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".feature_entrega.presentation.delivery_create.DeliveryCreationFragment">
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:orientation="vertical"
+        app:layout_constraintBottom_toTopOf="@+id/button_second"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/conatiner_basic_client_data"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/ti_client_name"
+                    style="@style/StandardOutlineTextField"
+                    android:layout_width="0dp"
+                    app:errorEnabled="true"
+                    android:layout_height="wrap_content"
+                    android:hint="Nome do cliente"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/ti_client_name_type"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content" />
+
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/ti_client_cpf"
+                    style="@style/StandardOutlineTextField"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    app:errorEnabled="true"
+                    android:hint="CPF do cliente"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/ti_client_name">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/ti_client_cpf_type"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:inputType="number" />
+
+                </com.google.android.material.textfield.TextInputLayout>
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/container_address_data"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <com.jessemanarim.entregaexpressa.common.presentation.components.CustomDivider
+                    android:id="@+id/address_divider"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginVertical="@dimen/standard_margin"
+                    app:custom_divider_description="@string/address_description"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/ti_client_cep"
+                    style="@style/StandardOutlineTextField"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    app:errorEnabled="true"
+                    android:hint="CEP"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/address_divider">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/ti_client_cep_type"
+                        android:inputType="number"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content" />
+
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/dd_client_uf"
+                    style="@style/StandardOutlineDropDown"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    app:errorEnabled="true"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/ti_client_cep"
+                    app:layout_constraintEnd_toStartOf="@id/dd_client_city"
+                    app:layout_constraintHorizontal_weight="3.5"
+                    android:hint="UF">
+
+                    <AutoCompleteTextView
+                        android:id="@+id/dd_client_uf_type"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:inputType="none"
+                        />
+
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/dd_client_city"
+                    android:enabled="false"
+                    style="@style/StandardOutlineDropDown"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    app:errorEnabled="true"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/ti_client_cep"
+                    app:layout_constraintStart_toEndOf="@id/dd_client_uf"
+                    app:layout_constraintHorizontal_weight="9"
+                    android:hint="CIDADE">
+
+                    <AutoCompleteTextView
+                        android:id="@+id/dd_client_city_type"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:inputType="none"
+                        />
+
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/ti_client_district"
+                    style="@style/StandardOutlineTextField"
+                    app:errorEnabled="true"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/dd_client_uf"
+                    android:hint="BAIRRO">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/ti_client_district_type"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content" />
+
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/ti_client_street"
+                    style="@style/StandardOutlineTextField"
+                    app:errorEnabled="true"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/ti_client_district"
+                    app:layout_constraintEnd_toStartOf="@id/ti_client_address_number"
+                    app:layout_constraintHorizontal_weight="7"
+                    android:hint="RUA">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/ti_client_street_type"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content" />
+
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/ti_client_address_number"
+                    style="@style/StandardOutlineTextField"
+                    app:errorEnabled="true"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/ti_client_district"
+                    app:layout_constraintStart_toEndOf="@id/ti_client_street"
+                    app:layout_constraintHorizontal_weight="3"
+                    android:hint="NUMERO">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/ti_client_address_number_type"
+                        android:inputType="number"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content" />
+
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/ti_client_complement"
+                    style="@style/StandardOutlineTextField"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/ti_client_street"
+                    android:hint="COMPLEMENTO">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:inputType="textMultiLine"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content" />
+
+                </com.google.android.material.textfield.TextInputLayout>
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/container_delivery_data"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <com.jessemanarim.entregaexpressa.common.presentation.components.CustomDivider
+                    android:id="@+id/delivery_divider"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginVertical="@dimen/standard_margin"
+                    app:custom_divider_description="@string/delivery_description"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/ti_package_quantity"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:hint="PACOTES"
+                    style="@style/StandardOutlineTextField"
+                    app:errorEnabled="true"
+                    app:layout_constraintEnd_toStartOf="@+id/dp_limit_date"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/delivery_divider">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/ti_package_quantity_type"
+                        android:inputType="number"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content" />
+
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/dp_limit_date"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:hint="DATA LIMITE"
+                    style="@style/StandardOutlineTextField"
+                    app:errorEnabled="true"
+                    app:layout_constraintStart_toEndOf="@id/ti_package_quantity"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/delivery_divider">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:clickable="false"
+                        android:cursorVisible="false"
+                        android:focusable="false"
+                        android:focusableInTouchMode="false"
+                        android:id="@+id/dp_limit_date_type"
+                        android:inputType="none"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content" />
+
+                </com.google.android.material.textfield.TextInputLayout>
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+        </LinearLayout>
+
+    </ScrollView>
+
+    <Button
+        android:padding="@dimen/standard_margin"
+        android:id="@+id/button_second"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="@string/criar_entrega"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"/>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

@@ -1,11 +1,14 @@
 package com.jessemanarim.entregaexpressa.di
 
-import com.jessemanarim.entregaexpressa.data.repository.DeliveryRepositoryImpl
-import com.jessemanarim.entregaexpressa.domain.repository.DeliveryRepository
+import com.jessemanarim.entregaexpressa.common.CoroutineContextProvider
+import com.jessemanarim.entregaexpressa.feature_entrega.presentation.delivery_create.DeliveryCreationViewModel
+import com.jessemanarim.entregaexpressa.feature_entrega.presentation.delivery_list.DeliveryListViewModel
+import org.koin.androidx.viewmodel.dsl.viewModel
 import org.koin.dsl.module
 
-val appModule = module{
-    single<DeliveryRepository>{
-        DeliveryRepositoryImpl()
-    }
+val appModule = module {
+    single { CoroutineContextProvider() }
+
+    viewModel { DeliveryListViewModel(get()) }
+    viewModel { DeliveryCreationViewModel(get()) }
 }

@@ -2,12 +2,31 @@
     <string name="app_name">EntregaExpressa</string>
     <string name="action_settings">Settings</string>
     <!-- Strings used for fragments for navigation -->
-    <string name="first_fragment_label">First Fragment</string>
-    <string name="second_fragment_label">Second Fragment</string>
+    <string name="first_fragment_label">Listagem de Entregas</string>
+    <string name="second_fragment_label">Formulário de criação</string>
     <string name="next">Next</string>
     <string name="previous">Previous</string>
 
     <string name="hello_first_fragment">Hello first fragment</string>
     <string name="hello_second_fragment">Hello second fragment. Arg: %1$s</string>
     <string name="floating_action_button_add_description">Image from plus button</string>
+    <string name="nome_do_cliente">nome do cliente</string>
+    <string name="data_limite">Data Limite</string>
+    <string name="delivery_quantity">Quantidade</string>
+    <string name="criar_entrega">Criar Entrega</string>
+    <string name="divider_default_value">Descrição do divisor</string>
+    <string name="delivery_description">Entrega</string>
+    <string name="address_description">Endereço</string>
+
+    <string name="error_empty_client_name">Insira um nome de cliente</string>
+    <string name="error_empty_cpf">Insira um CPF</string>
+    <string name="error_empty_cep">Insira um CEP</string>
+    <string name="error_empty_uf">Selecione um estado</string>
+    <string name="error_empty_city">Selecione uma cidade</string>
+    <string name="error_empty_district">Insira um bairro</string>
+    <string name="error_empty_street">Insira uma rua</string>
+    <string name="error_empty_number">Insira um número</string>
+    <string name="error_empty_packages">Quantidade necessária</string>
+    <string name="error_empty_limit_date">Preencha uma data</string>
+
 </resources>
