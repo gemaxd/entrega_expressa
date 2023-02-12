@@ -8,10 +8,13 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ArrayAdapter
 import android.widget.AutoCompleteTextView
+import androidx.core.widget.doAfterTextChanged
 import androidx.fragment.app.Fragment
+import androidx.navigation.fragment.findNavController
 import com.jessemanarim.entregaexpressa.R
 import com.jessemanarim.entregaexpressa.common.util.getCountryCode
 import com.jessemanarim.entregaexpressa.databinding.FragmentDeliveryCreationBinding
+import com.jessemanarim.entregaexpressa.feature_entrega.data.model.Delivery
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -20,9 +23,11 @@ import java.util.*
 
 class DeliveryCreationFragment : Fragment() {
 
+    private val _viewModel: DeliveryCreationViewModel by viewModel()
+
     private var _binding: FragmentDeliveryCreationBinding? = null
     private val binding get() = _binding!!
-    private val _viewModel: DeliveryCreationViewModel by viewModel()
+    private var currentDelivery = Delivery()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -59,98 +64,144 @@ class DeliveryCreationFragment : Fragment() {
                 (ddClientCity.editText as? AutoCompleteTextView)?.setAdapter(cityAdapter)
             }
         }
+
+        validateErrors()
     }
 
     @SuppressLint("SetTextI18n")
     private fun setupListeners(){
         with(binding){
             buttonSecond.setOnClickListener {
-                validateErrors()
-//                CoroutineScope(Dispatchers.IO).launch {
-//                    _viewModel.createDelivery(
-//                        Delivery(
-//                            packageQuantity = 10,
-//                            clientName = "Jessé",
-//                            clientCPF = "000000000"
-//                        )
-//                    )
-//                }
-//                findNavController().navigate(R.id.action_SecondFragment_to_FirstFragment)
+                if(_viewModel.validateFields(currentDelivery)){
+                    CoroutineScope(Dispatchers.IO).launch {
+                        _viewModel.createDelivery(delivery = currentDelivery)
+                    }
+                    findNavController().navigate(R.id.action_DeliveryCreationFragment_to_DeliveryListFragment)
+                }
+            }
+
+            tiClientNameType.doAfterTextChanged {
+                currentDelivery.clientName = it.toString()
+                _viewModel.validateClientName(currentDelivery)
+            }
+
+            tiClientCpfType.doAfterTextChanged {
+                currentDelivery.clientCPF = it.toString()
+                _viewModel.validateClientCPF(currentDelivery)
+            }
+
+            tiClientCepType.doAfterTextChanged {
+                currentDelivery.deliveryCEP = it.toString()
+                _viewModel.validateDeliveryCEP(currentDelivery)
             }
 
             ddClientUfType.setOnItemClickListener { adapterView, _, i, _ ->
+                currentDelivery.deliveryUF = adapterView.getItemAtPosition(i).toString()
+                _viewModel.validateDeliveryUF(currentDelivery)
                 ddClientCityType.setText("")
                 CoroutineScope(Dispatchers.IO).launch {
                     _viewModel.fetchCities(adapterView.getItemAtPosition(i).toString())
                 }
             }
 
+            ddClientCityType.setOnItemClickListener { adapterView, _, i, _ ->
+                currentDelivery.deliveryCity = adapterView.getItemAtPosition(i).toString()
+                _viewModel.validateDeliveryCity(currentDelivery)
+            }
+
+            tiClientDistrictType.doAfterTextChanged {
+                currentDelivery.deliveryDistrict = it.toString()
+                _viewModel.validateDeliveryDistrict(currentDelivery)
+            }
+
+            tiClientStreetType.doAfterTextChanged {
+                currentDelivery.deliveryStreet = it.toString()
+                _viewModel.validateDeliveryStreet(currentDelivery)
+            }
+
+            tiClientAddressNumberType.doAfterTextChanged {
+                currentDelivery.deliveryNumber = it.toString()
+                _viewModel.validateDeliveryNumber(currentDelivery)
+            }
+
+            tiPackageQuantityType.doAfterTextChanged {
+                currentDelivery.deliveryPackages = it.toString()
+                _viewModel.validateDeliveryPackages(currentDelivery)
+            }
+
             dpLimitDateType.setOnClickListener {
-                val c = Calendar.getInstance()
-                val currentYear = c.get(Calendar.YEAR)
-                val currentMonth = c.get(Calendar.MONTH)
-                val currentDay = c.get(Calendar.DAY_OF_MONTH)
-
-                val datePickerDialog = DatePickerDialog(requireContext(), { _, year, month, dayOfMonth ->
-                    dpLimitDateType.setText("$dayOfMonth/${month+1}/$year")
-                }, currentYear, currentMonth, currentDay)
-
-                datePickerDialog.show()
+                openCalendar()
             }
         }
     }
 
     private fun validateErrors(){
+        _viewModel.isClientNameValid.observe(viewLifecycleOwner) { isValid ->
+            with(binding){
+                if(isValid) tiClientName.error = null else tiClientName.error = getString(R.string.error_empty_client_name)
+            }
+        }
+        _viewModel.isClientCPFValid.observe(viewLifecycleOwner) { isValid ->
+            with(binding){
+                if(isValid) tiClientCpf.error = null else tiClientCpf.error = getString(R.string.error_empty_cpf)
+            }
+        }
+        _viewModel.isDeliveryCEPValid.observe(viewLifecycleOwner) { isValid ->
+            with(binding){
+                if(isValid) tiClientCep.error = null else tiClientCep.error = getString(R.string.error_empty_cep)
+            }
+        }
+        _viewModel.isDeliveryUFValid.observe(viewLifecycleOwner) { isValid ->
+            with(binding){
+                if(isValid) ddClientUf.error = null else ddClientUf.error = getString(R.string.error_empty_uf)
+            }
+        }
+        _viewModel.isDeliveryCityValid.observe(viewLifecycleOwner) { isValid ->
+            with(binding){
+                if(isValid) ddClientCity.error = null else ddClientCity.error = getString(R.string.error_empty_city)
+            }
+        }
+        _viewModel.isDeliveryDistrictValid.observe(viewLifecycleOwner) { isValid ->
+            with(binding){
+                if(isValid) tiClientDistrict.error = null else tiClientDistrict.error = getString(R.string.error_empty_district)
+            }
+        }
+        _viewModel.isDeliveryStreetValid.observe(viewLifecycleOwner) { isValid ->
+            with(binding){
+                if(isValid) tiClientStreet.error = null else tiClientStreet.error = getString(R.string.error_empty_street)
+            }
+        }
+        _viewModel.isDeliveryNumberValid.observe(viewLifecycleOwner) { isValid ->
+            with(binding){
+                if(isValid) tiClientAddressNumber.error = null else tiClientAddressNumber.error = getString(R.string.error_empty_number)
+            }
+        }
+        _viewModel.isDeliveryPackagesValid.observe(viewLifecycleOwner) { isValid ->
+            with(binding){
+                if(isValid) tiPackageQuantity.error = null else tiPackageQuantity.error = getString(R.string.error_empty_packages)
+            }
+        }
+        _viewModel.isDeliveryLimitDateValid.observe(viewLifecycleOwner) { isValid ->
+            with(binding){
+                if(isValid) dpLimitDate.error = null else dpLimitDate.error = getString(R.string.error_empty_limit_date)
+            }
+        }
+    }
+
+    private fun openCalendar(){
         with(binding){
-            if (tiClientNameType.text.isNullOrBlank() || tiClientNameType.text.isNullOrEmpty())
-                tiClientName.error = getString(R.string.error_empty_client_name)
-            else
-                tiClientName.error = null
+            val c = Calendar.getInstance()
+            val currentYear = c.get(Calendar.YEAR)
+            val currentMonth = c.get(Calendar.MONTH)
+            val currentDay = c.get(Calendar.DAY_OF_MONTH)
 
-            if (tiClientCpfType.text.isNullOrBlank() || tiClientCpfType.text.isNullOrEmpty())
-                tiClientCpf.error = getString(R.string.error_empty_cpf)
-            else
-                tiClientCpf.error = null
+            val datePickerDialog = DatePickerDialog(requireContext(), { _, year, month, dayOfMonth ->
+                dpLimitDateType.setText(getString(R.string.date_string, dayOfMonth, month+1, year))
+                currentDelivery.deliveryLimitDate = "$dayOfMonth/${month+1}/$year"
+                _viewModel.validateDeliveryLimitDate(currentDelivery)
+            }, currentYear, currentMonth, currentDay)
 
-            if (tiClientCepType.text.isNullOrBlank() || tiClientCepType.text.isNullOrEmpty())
-                tiClientCep.error = getString(R.string.error_empty_cep)
-            else
-                tiClientCep.error = null
-
-            if (ddClientUfType.text.isNullOrBlank() || ddClientUfType.text.isNullOrEmpty())
-                ddClientUf.error = getString(R.string.error_empty_uf)
-            else
-                ddClientUf.error = null
-
-            if (ddClientCityType.text.isNullOrBlank() || ddClientCityType.text.isNullOrEmpty())
-                ddClientCity.error = getString(R.string.error_empty_city)
-            else
-                ddClientCity.error = null
-
-            if (tiClientDistrictType.text.isNullOrBlank() || tiClientDistrictType.text.isNullOrEmpty())
-                tiClientDistrict.error = getString(R.string.error_empty_district)
-            else
-                tiClientDistrict.error = null
-
-            if (tiClientStreetType.text.isNullOrBlank() || tiClientStreetType.text.isNullOrEmpty())
-                tiClientStreet.error = getString(R.string.error_empty_street)
-            else
-                tiClientStreet.error = null
-
-            if (tiClientAddressNumberType.text.isNullOrBlank() || tiClientAddressNumberType.text.isNullOrEmpty())
-                tiClientAddressNumber.error = getString(R.string.error_empty_number)
-            else
-                tiClientAddressNumber.error = null
-
-            if (tiPackageQuantityType.text.isNullOrBlank() || tiPackageQuantityType.text.isNullOrEmpty())
-                tiPackageQuantity.error = getString(R.string.error_empty_packages)
-            else
-                tiPackageQuantity.error = null
-
-            if (dpLimitDateType.text.isNullOrBlank() || dpLimitDateType.text.isNullOrEmpty())
-                dpLimitDate.error = getString(R.string.error_empty_limit_date)
-            else
-                dpLimitDate.error = null
+            datePickerDialog.show()
         }
     }
 

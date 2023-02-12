@@ -2,8 +2,9 @@
     <string name="app_name">EntregaExpressa</string>
     <string name="action_settings">Settings</string>
     <!-- Strings used for fragments for navigation -->
-    <string name="first_fragment_label">Listagem de Entregas</string>
-    <string name="second_fragment_label">Formulário de criação</string>
+    <string name="delivery_list_fragment_label">Listagem de Entregas</string>
+    <string name="delivery_creation_fragment_label">Formulário de criação</string>
+    <string name="delivery_detail_fragment_label">Detalhes da entrega</string>
     <string name="next">Next</string>
     <string name="previous">Previous</string>
 
@@ -17,7 +18,8 @@
     <string name="divider_default_value">Descrição do divisor</string>
     <string name="delivery_description">Entrega</string>
     <string name="address_description">Endereço</string>
-
+    <string name="empty_list_feedback_title">Nenhuma entrega cadastrada.</string>
+    <string name="empty_list_feedback_description">Clique no botão abaixo para começar a cadastrar!</string>
     <string name="error_empty_client_name">Insira um nome de cliente</string>
     <string name="error_empty_cpf">Insira um CPF</string>
     <string name="error_empty_cep">Insira um CEP</string>
@@ -28,5 +30,8 @@
     <string name="error_empty_number">Insira um número</string>
     <string name="error_empty_packages">Quantidade necessária</string>
     <string name="error_empty_limit_date">Preencha uma data</string>
+    <string name="date_string">%1$d/%2$d/%3$d</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 
 </resources>

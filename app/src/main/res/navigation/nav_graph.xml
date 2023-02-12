@@ -3,26 +3,53 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/nav_graph"
-    app:startDestination="@id/FirstFragment">
+    app:startDestination="@id/DeliveryListFragment">
 
     <fragment
-        android:id="@+id/FirstFragment"
+        android:id="@+id/DeliveryListFragment"
         android:name="com.jessemanarim.entregaexpressa.feature_entrega.presentation.delivery_list.DeliveriesListFragment"
-        android:label="@string/first_fragment_label"
-        tools:layout="@layout/fragment_first">
+        android:label="@string/delivery_list_fragment_label"
+        tools:layout="@layout/fragment_delivery_list">
 
         <action
-            android:id="@+id/action_FirstFragment_to_SecondFragment"
-            app:destination="@id/SecondFragment" />
+            android:id="@+id/action_DeliveryListFragment_to_DeliveryCreationFragment"
+            app:destination="@id/DeliveryCreationFragment" />
+
+        <action
+            android:id="@+id/action_DeliveryListFragment_to_DeliveryDetailFragment"
+            app:destination="@id/DeliveryDetailFragment">
+
+            <argument
+                android:name="deliveryId"
+                android:defaultValue="0"
+                app:argType="integer"/>
+
+        </action>
     </fragment>
+
+
     <fragment
-        android:id="@+id/SecondFragment"
+        android:id="@+id/DeliveryCreationFragment"
         android:name="com.jessemanarim.entregaexpressa.feature_entrega.presentation.delivery_create.DeliveryCreationFragment"
-        android:label="@string/second_fragment_label"
+        android:label="@string/delivery_creation_fragment_label"
         tools:layout="@layout/fragment_delivery_creation">
 
         <action
-            android:id="@+id/action_SecondFragment_to_FirstFragment"
-            app:destination="@id/FirstFragment" />
+            android:id="@+id/action_DeliveryCreationFragment_to_DeliveryListFragment"
+            app:destination="@id/DeliveryListFragment" />
     </fragment>
+
+
+    <fragment
+        android:id="@+id/DeliveryDetailFragment"
+        android:name="com.jessemanarim.entregaexpressa.feature_entrega.presentation.delivery_detail.DeliveryDetailFragment"
+        android:label="@string/delivery_detail_fragment_label"
+        tools:layout="@layout/fragment_delivery_detail">
+
+        <action
+            android:id="@+id/action_SecondFragment_to_FirstFragment"
+            app:destination="@id/DeliveryListFragment" />
+    </fragment>
+
+
 </navigation>
