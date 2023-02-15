@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <declare-styleable name="CustomDivider">
+        <attr name="custom_divider_description" format="reference" />
+    </declare-styleable>
+
+    <declare-styleable name="CustomCPFTextInputField">
+        <attr name="error_msg" format="string" />
+    </declare-styleable>
+</resources>

@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <style name="StandardLabel" parent="TextAppearance.AppCompat">
+        <item name="android:textColor">#444444</item>
+        <item name="android:textAllCaps">true</item>
+        <item name="android:textSize">@dimen/normal_text_size</item>
+    </style>
+
+    <style name="SmallLabel" parent="StandardLabel">
+        <item name="android:textSize">@dimen/very_small_text_size</item>
+    </style>
+
+    <style name="LargeLabel" parent="StandardLabel">
+        <item name="android:textSize">@dimen/large_text_size</item>
+    </style>
+
+
+    <style name="StandardText" parent="TextAppearance.AppCompat">
+        <item name="android:textColor">#000000</item>
+        <item name="android:textSize">@dimen/normal_text_size</item>
+    </style>
+
+    <style name="StandardTextAdapterField" parent="StandardText">
+        <item name="android:textStyle">bold</item>
+    </style>
+
+    <style name="SmallText" parent="StandardText">
+        <item name="android:textSize">@dimen/very_small_text_size</item>
+    </style>
+
+    <style name="SmallTextAdapterField" parent="SmallText">
+        <item name="android:textSize">@dimen/small_text_size</item>
+        <item name="android:textStyle">italic</item>
+        <item name="android:textColor">#444444</item>
+    </style>
+
+    <style name="SmallTextAdapterField.Date" parent="SmallTextAdapterField">
+        <item name="android:textAlignment">center</item>
+    </style>
+
+    <style name="LargeText" parent="StandardText">
+        <item name="android:textSize">@dimen/large_text_size</item>
+    </style>
+
+    <style name="DetailIdInfo" parent="LargeText">
+        <item name="android:textColor">#888888</item>
+    </style>
+
+    <style name="DeliveryId" parent="StandardText">
+        <item name="android:textColor">#FFFFFF</item>
+        <item name="android:textStyle">bold|italic</item>
+    </style>
+
+    <style name="StandardOutlineTextField" parent="Widget.MaterialComponents.TextInputLayout.OutlinedBox">
+        <item name="android:layout_margin">@dimen/small_margin</item>
+    </style>
+
+    <style name="StandardOutlineDropDown" parent="Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu">
+        <item name="android:layout_margin">@dimen/small_margin</item>
+    </style>
+
+    <style name="ContentDivider">
+        <item name="android:layout_margin">@dimen/small_margin</item>
+    </style>
+
+    <style name="ContentDivider.Div" parent="ContentDivider">
+        <item name="android:background">#aaa</item>
+    </style>
+
+    <style name="StandardCard">
+        <item name="cardCornerRadius">10dp</item>
+        <item name="cardElevation">5dp</item>
+    </style>
+
+    <style name="ContentDivider.Text" parent="ContentDivider">
+        <item name="android:textAllCaps">true</item>
+        <item name="android:textColor">#aaa</item>
+        <item name="android:textSize">@dimen/very_small_text_size</item>
+        <item name="android:textAlignment">center</item>
+    </style>
+
+    <style name="FeedBackMessage">
+        <item name="android:textColor">#aaa</item>
+        <item name="android:textSize">@dimen/normal_text_size</item>
+        <item name="android:textAlignment">center</item>
+    </style>
+
+    <style name="FeedBackMessage.Title" parent="FeedBackMessage">
+        <item name="android:textSize">@dimen/large_text_size</item>
+    </style>
+
+    <style name="FeedBackMessage.Description" parent="FeedBackMessage">
+        <item name="android:textColor">#000</item>
+        <item name="android:textSize">@dimen/very_small_text_size</item>
+    </style>
+
+
+</resources>

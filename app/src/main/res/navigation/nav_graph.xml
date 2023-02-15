@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/nav_graph"
+    app:startDestination="@id/DeliveryListFragment">
+
+    <fragment
+        android:id="@+id/DeliveryListFragment"
+        android:name="com.jessemanarim.entregaexpressa.feature_entrega.presentation.delivery_list.DeliveriesListFragment"
+        android:label="@string/delivery_list_fragment_label"
+        tools:layout="@layout/fragment_delivery_list">
+
+        <action
+            android:id="@+id/action_DeliveryListFragment_to_DeliveryCreationFragment"
+            app:destination="@id/DeliveryCreationFragment" />
+
+        <action
+            android:id="@+id/action_DeliveryListFragment_to_DeliveryDetailFragment"
+            app:destination="@id/DeliveryDetailFragment">
+
+            <argument
+                android:name="deliveryId"
+                android:defaultValue="0"
+                app:argType="integer" />
+
+        </action>
+    </fragment>
+
+
+    <fragment
+        android:id="@+id/DeliveryCreationFragment"
+        android:name="com.jessemanarim.entregaexpressa.feature_entrega.presentation.delivery_create.DeliveryCreationFragment"
+        android:label="@string/delivery_creation_fragment_label"
+        tools:layout="@layout/fragment_delivery_creation">
+
+        <action
+            android:id="@+id/action_DeliveryCreationFragment_to_DeliveryListFragment"
+            app:destination="@id/DeliveryListFragment" />
+    </fragment>
+
+
+    <fragment
+        android:id="@+id/DeliveryDetailFragment"
+        android:name="com.jessemanarim.entregaexpressa.feature_entrega.presentation.delivery_detail.DeliveryDetailFragment"
+        android:label="@string/delivery_detail_fragment_label"
+        tools:layout="@layout/fragment_delivery_detail">
+
+        <action
+            android:id="@+id/action_DeliveryDetailFragment_to_DeliveryListFragment"
+            app:destination="@id/DeliveryListFragment" />
+    </fragment>
+
+
+</navigation>

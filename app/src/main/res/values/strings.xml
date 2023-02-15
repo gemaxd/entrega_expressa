@@ -1,0 +1,62 @@
+<resources>
+    <string name="app_name">EntregaExpressa</string>
+    <string name="action_settings">Settings</string>
+    <!-- Strings used for fragments for navigation -->
+    <string name="delivery_list_fragment_label">Listagem de Entregas</string>
+    <string name="delivery_creation_fragment_label">Formulário de criação</string>
+    <string name="delivery_detail_fragment_label">Detalhes da entrega</string>
+    <string name="next">Next</string>
+    <string name="previous">Previous</string>
+
+    <string name="hello_first_fragment">Hello first fragment</string>
+    <string name="hello_second_fragment">Hello second fragment. Arg: %1$s</string>
+    <string name="floating_action_button_add_description">Image from plus button</string>
+    <string name="nome_do_cliente">nome do cliente</string>
+    <string name="data_limite">Data Limite</string>
+    <string name="delivery_quantity">Quantidade</string>
+    <string name="criar_entrega">Criar Entrega</string>
+    <string name="edit">Editar</string>
+    <string name="update">Atualizar</string>
+    <string name="cancel">Cancelar</string>
+    <string name="divider_default_value">Descrição do divisor</string>
+    <string name="delivery_description">Entrega</string>
+    <string name="address_description">Endereço</string>
+    <string name="empty_list_feedback_title">Nenhuma entrega cadastrada.</string>
+    <string name="empty_list_feedback_description">Clique no botão abaixo para começar a cadastrar!</string>
+    <string name="error_empty_client_name">Insira um nome de cliente</string>
+    <string name="error_empty_cpf">Insira um CPF.</string>
+    <string name="error_invalid_cpf">CPF Inválido.</string>
+    <string name="error_empty_cep">Insira um CEP.</string>
+    <string name="error_invalid_cep">CEP Inválido.</string>
+    <string name="error_empty_uf">Selecione um estado</string>
+    <string name="error_empty_city">Selecione uma cidade</string>
+    <string name="error_empty_district">Insira um bairro</string>
+    <string name="error_empty_street">Insira uma rua</string>
+    <string name="error_empty_number">Insira um número</string>
+    <string name="error_empty_packages">Quantidade necessária</string>
+    <string name="error_empty_limit_date">Preencha uma data</string>
+    <string name="date_string">%1$d/%2$d/%3$d</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="confirm_exclusion_message">Tem certeza que deseja excluir esse registro?</string>
+    <string name="yes">Sim</string>
+    <string name="no">Não</string>
+    <string name="client_name_hint">Nome do cliente</string>
+    <string name="client_cpf_hint">CPF do Cliente</string>
+    <string name="delivery_cep_hint">CEP do Cliente</string>
+    <string name="uf">UF</string>
+    <string name="cidade">CIDADE</string>
+    <string name="bairro">BAIRRO</string>
+    <string name="rua">RUA</string>
+    <string name="numero">NUMERO</string>
+    <string name="complemento">COMPLEMENTO</string>
+    <string name="pacotes">PACOTES</string>
+    <string name="data_limite_hint">DATA LIMITE</string>
+    <string name="detail_id_info">Entrega de ID #%1$d</string>
+    <string name="id_adapter_item_info">#%1$d</string>
+    <string name="error_fetching_cities">Houve um problema ao buscar as cidades</string>
+    <string name="delete_button_description">Botão com ação para deletar item das entregas</string>
+    <string name="no_itens_image_description">Imagem que representa a falta de entregas na lista</string>
+    <string name="add_item_button_description">Botão flutante para adição de um novo item</string>
+
+</resources>
