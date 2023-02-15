@@ -2,9 +2,12 @@ package com.jessemanarim.entregaexpressa.feature_entrega.data.repository
 
 import com.jessemanarim.entregaexpressa.EntregaExpressaDatabase
 import com.jessemanarim.entregaexpressa.feature_entrega.data.api.ApiService
-import com.jessemanarim.entregaexpressa.feature_entrega.data.model.CitiesListResponse
+import com.jessemanarim.entregaexpressa.feature_entrega.data.model.CitiesResponse
+import com.jessemanarim.entregaexpressa.feature_entrega.data.model.City
+import com.jessemanarim.entregaexpressa.feature_entrega.data.model.SimpleResponse
 import com.jessemanarim.entregaexpressa.feature_entrega.data.model.Delivery
 import com.jessemanarim.entregaexpressa.feature_entrega.domain.repository.DeliveryRepository
+import retrofit2.Response
 
 class DeliveryRepositoryImpl(
     private val apiService: ApiService,
@@ -26,11 +29,19 @@ class DeliveryRepositoryImpl(
         database.deliveryDao().deleteDelivery(delivery)
     }
 
-    override fun findDelivery(deliveryId: Int): Delivery {
+    override suspend fun findDelivery(deliveryId: Int): Delivery {
         return database.deliveryDao().findDelivery(deliveryId)
     }
 
-    override suspend fun fetchCities(countryState: String): List<CitiesListResponse> {
-        return apiService.fetchCities(countryState = countryState)
+    override suspend fun fetchCities(countryState: String): SimpleResponse<List<City>> {
+        return safeApiCall { apiService.fetchCities(countryState = countryState) }
+    }
+
+    private inline fun <T> safeApiCall(apiCall: () -> Response<T>): SimpleResponse<T>{
+        return try {
+            SimpleResponse.success(apiCall.invoke())
+        } catch (e: java.lang.Exception){
+            SimpleResponse.failure(e)
+        }
     }
 }

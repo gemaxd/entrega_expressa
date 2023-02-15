@@ -10,13 +10,23 @@ import android.widget.ArrayAdapter
 import android.widget.AutoCompleteTextView
 import androidx.core.widget.doAfterTextChanged
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
+import com.google.android.material.snackbar.Snackbar
 import com.jessemanarim.entregaexpressa.R
+import com.jessemanarim.entregaexpressa.common.presentation.components.cepFieldFilters
+import com.jessemanarim.entregaexpressa.common.presentation.components.cepMaskTextWatcher
+import com.jessemanarim.entregaexpressa.common.presentation.components.cpfFieldFilters
+import com.jessemanarim.entregaexpressa.common.presentation.components.cpfMaskTextWatcher
+import com.jessemanarim.entregaexpressa.common.presentation.getErrorOrNull
 import com.jessemanarim.entregaexpressa.common.util.getCountryCode
 import com.jessemanarim.entregaexpressa.databinding.FragmentDeliveryCreationBinding
 import com.jessemanarim.entregaexpressa.feature_entrega.data.model.Delivery
+import com.jessemanarim.entregaexpressa.feature_entrega.domain.validation.getCEPErrorOrNull
+import com.jessemanarim.entregaexpressa.feature_entrega.domain.validation.getCPFErrorOrNull
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import java.util.*
@@ -27,13 +37,14 @@ class DeliveryCreationFragment : Fragment() {
 
     private var _binding: FragmentDeliveryCreationBinding? = null
     private val binding get() = _binding!!
-    private var currentDelivery = Delivery()
+    private var _currentDelivery = Delivery()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
         _binding = FragmentDeliveryCreationBinding.inflate(inflater, container, false)
+        subscribeStateFlow()
         return binding.root
     }
 
@@ -52,19 +63,39 @@ class DeliveryCreationFragment : Fragment() {
         }
     }
 
-    private fun setupObservers(){
-        _viewModel.citiesList.observe(viewLifecycleOwner) { citiesList ->
-            with(binding){
-                ddClientCity.isEnabled = citiesList.isNotEmpty()
-                val cityAdapter = ArrayAdapter(
-                    requireContext(),
-                    R.layout.list_item,
-                    citiesList.map { cityResponse -> cityResponse.name }
-                )
-                (ddClientCity.editText as? AutoCompleteTextView)?.setAdapter(cityAdapter)
+    private fun subscribeStateFlow(){
+        lifecycleScope.launchWhenStarted {
+            _viewModel.uiState.collectLatest { uiState ->
+                with(binding){
+                    when(uiState){
+                        is DeliveryCreationUiState.Ready -> {
+                            loadingView.visibility = View.GONE
+                        }
+                        is DeliveryCreationUiState.Loading -> {
+                            loadingView.visibility = View.VISIBLE
+                        }
+                    }
+                }
             }
         }
+    }
 
+    private fun setupObservers(){
+        _viewModel.citiesResponse.observe(viewLifecycleOwner) { cityResponse ->
+            with(binding){
+                if(cityResponse == null){
+                    Snackbar.make(clGeneralData, "Houve um problema ao buscar as cidades", Snackbar.LENGTH_SHORT).show()
+                } else {
+                    ddClientCity.isEnabled = cityResponse.cities.isNotEmpty()
+                    val cityAdapter = ArrayAdapter(
+                        requireContext(),
+                        R.layout.list_item,
+                        cityResponse.cities.map { cityResponse -> cityResponse.name }
+                    )
+                    (ddClientCity.editText as? AutoCompleteTextView)?.setAdapter(cityAdapter)
+                }
+            }
+        }
         validateErrors()
     }
 
@@ -72,32 +103,26 @@ class DeliveryCreationFragment : Fragment() {
     private fun setupListeners(){
         with(binding){
             buttonSecond.setOnClickListener {
-                if(_viewModel.validateFields(currentDelivery)){
+                if(_viewModel.validateFields(_currentDelivery)){
                     CoroutineScope(Dispatchers.IO).launch {
-                        _viewModel.createDelivery(delivery = currentDelivery)
+                        _viewModel.createDelivery(delivery = _currentDelivery)
                     }
                     findNavController().navigate(R.id.action_DeliveryCreationFragment_to_DeliveryListFragment)
                 }
             }
 
             tiClientNameType.doAfterTextChanged {
-                currentDelivery.clientName = it.toString()
-                _viewModel.validateClientName(currentDelivery)
+                _currentDelivery.clientName = it.toString()
+                _viewModel.validateClientName(_currentDelivery)
             }
 
-            tiClientCpfType.doAfterTextChanged {
-                currentDelivery.clientCPF = it.toString()
-                _viewModel.validateClientCPF(currentDelivery)
-            }
+            setupCPFField()
 
-            tiClientCepType.doAfterTextChanged {
-                currentDelivery.deliveryCEP = it.toString()
-                _viewModel.validateDeliveryCEP(currentDelivery)
-            }
+            setupCEPField()
 
             ddClientUfType.setOnItemClickListener { adapterView, _, i, _ ->
-                currentDelivery.deliveryUF = adapterView.getItemAtPosition(i).toString()
-                _viewModel.validateDeliveryUF(currentDelivery)
+                _currentDelivery.deliveryUF = adapterView.getItemAtPosition(i).toString()
+                _viewModel.validateDeliveryUF(_currentDelivery)
                 ddClientCityType.setText("")
                 CoroutineScope(Dispatchers.IO).launch {
                     _viewModel.fetchCities(adapterView.getItemAtPosition(i).toString())
@@ -105,28 +130,32 @@ class DeliveryCreationFragment : Fragment() {
             }
 
             ddClientCityType.setOnItemClickListener { adapterView, _, i, _ ->
-                currentDelivery.deliveryCity = adapterView.getItemAtPosition(i).toString()
-                _viewModel.validateDeliveryCity(currentDelivery)
+                _currentDelivery.deliveryCity = adapterView.getItemAtPosition(i).toString()
+                _viewModel.validateDeliveryCity(_currentDelivery)
             }
 
             tiClientDistrictType.doAfterTextChanged {
-                currentDelivery.deliveryDistrict = it.toString()
-                _viewModel.validateDeliveryDistrict(currentDelivery)
+                _currentDelivery.deliveryDistrict = it.toString()
+                _viewModel.validateDeliveryDistrict(_currentDelivery)
             }
 
             tiClientStreetType.doAfterTextChanged {
-                currentDelivery.deliveryStreet = it.toString()
-                _viewModel.validateDeliveryStreet(currentDelivery)
+                _currentDelivery.deliveryStreet = it.toString()
+                _viewModel.validateDeliveryStreet(_currentDelivery)
             }
 
             tiClientAddressNumberType.doAfterTextChanged {
-                currentDelivery.deliveryNumber = it.toString()
-                _viewModel.validateDeliveryNumber(currentDelivery)
+                _currentDelivery.deliveryNumber = it.toString()
+                _viewModel.validateDeliveryNumber(_currentDelivery)
             }
 
             tiPackageQuantityType.doAfterTextChanged {
-                currentDelivery.deliveryPackages = it.toString()
-                _viewModel.validateDeliveryPackages(currentDelivery)
+                _currentDelivery.deliveryPackages = it.toString()
+                _viewModel.validateDeliveryPackages(_currentDelivery)
+            }
+
+            tiClientComplementType.doAfterTextChanged {
+                _currentDelivery.deliveryComplement = it.toString()
             }
 
             dpLimitDateType.setOnClickListener {
@@ -138,52 +167,52 @@ class DeliveryCreationFragment : Fragment() {
     private fun validateErrors(){
         _viewModel.isClientNameValid.observe(viewLifecycleOwner) { isValid ->
             with(binding){
-                if(isValid) tiClientName.error = null else tiClientName.error = getString(R.string.error_empty_client_name)
+                tiClientName.error = requireContext().getErrorOrNull(isValid)
             }
         }
         _viewModel.isClientCPFValid.observe(viewLifecycleOwner) { isValid ->
             with(binding){
-                if(isValid) tiClientCpf.error = null else tiClientCpf.error = getString(R.string.error_empty_cpf)
+                tiClientCpf.error = requireContext().getErrorOrNull(isValid)
             }
         }
         _viewModel.isDeliveryCEPValid.observe(viewLifecycleOwner) { isValid ->
             with(binding){
-                if(isValid) tiClientCep.error = null else tiClientCep.error = getString(R.string.error_empty_cep)
+                tiClientCep.error = requireContext().getErrorOrNull(isValid)
             }
         }
         _viewModel.isDeliveryUFValid.observe(viewLifecycleOwner) { isValid ->
             with(binding){
-                if(isValid) ddClientUf.error = null else ddClientUf.error = getString(R.string.error_empty_uf)
+                ddClientUf.error = requireContext().getErrorOrNull(isValid)
             }
         }
         _viewModel.isDeliveryCityValid.observe(viewLifecycleOwner) { isValid ->
             with(binding){
-                if(isValid) ddClientCity.error = null else ddClientCity.error = getString(R.string.error_empty_city)
+                ddClientCity.error = requireContext().getErrorOrNull(isValid)
             }
         }
         _viewModel.isDeliveryDistrictValid.observe(viewLifecycleOwner) { isValid ->
             with(binding){
-                if(isValid) tiClientDistrict.error = null else tiClientDistrict.error = getString(R.string.error_empty_district)
+                tiClientDistrict.error = requireContext().getErrorOrNull(isValid)
             }
         }
         _viewModel.isDeliveryStreetValid.observe(viewLifecycleOwner) { isValid ->
             with(binding){
-                if(isValid) tiClientStreet.error = null else tiClientStreet.error = getString(R.string.error_empty_street)
+                tiClientStreet.error = requireContext().getErrorOrNull(isValid)
             }
         }
         _viewModel.isDeliveryNumberValid.observe(viewLifecycleOwner) { isValid ->
             with(binding){
-                if(isValid) tiClientAddressNumber.error = null else tiClientAddressNumber.error = getString(R.string.error_empty_number)
+                tiClientAddressNumber.error = requireContext().getErrorOrNull(isValid)
             }
         }
         _viewModel.isDeliveryPackagesValid.observe(viewLifecycleOwner) { isValid ->
             with(binding){
-                if(isValid) tiPackageQuantity.error = null else tiPackageQuantity.error = getString(R.string.error_empty_packages)
+                tiPackageQuantity.error = requireContext().getErrorOrNull(isValid)
             }
         }
         _viewModel.isDeliveryLimitDateValid.observe(viewLifecycleOwner) { isValid ->
             with(binding){
-                if(isValid) dpLimitDate.error = null else dpLimitDate.error = getString(R.string.error_empty_limit_date)
+                dpLimitDate.error = requireContext().getErrorOrNull(isValid)
             }
         }
     }
@@ -197,8 +226,8 @@ class DeliveryCreationFragment : Fragment() {
 
             val datePickerDialog = DatePickerDialog(requireContext(), { _, year, month, dayOfMonth ->
                 dpLimitDateType.setText(getString(R.string.date_string, dayOfMonth, month+1, year))
-                currentDelivery.deliveryLimitDate = "$dayOfMonth/${month+1}/$year"
-                _viewModel.validateDeliveryLimitDate(currentDelivery)
+                _currentDelivery.deliveryLimitDate = "$dayOfMonth/${month+1}/$year"
+                _viewModel.validateDeliveryLimitDate(_currentDelivery)
             }, currentYear, currentMonth, currentDay)
 
             datePickerDialog.show()
@@ -208,5 +237,25 @@ class DeliveryCreationFragment : Fragment() {
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
+    }
+
+    private fun setupCEPField(){
+        with(binding){
+            tiClientCepType.filters = cepFieldFilters()
+            tiClientCepType.addTextChangedListener(cepMaskTextWatcher { cep ->
+                _currentDelivery.deliveryCEP = cep
+                tiClientCep.error = requireContext().getErrorOrNull(getCEPErrorOrNull(cep))
+            })
+        }
+    }
+
+    private fun setupCPFField(){
+        with(binding){
+            tiClientCpfType.filters = cpfFieldFilters()
+            tiClientCpfType.addTextChangedListener(cpfMaskTextWatcher { cpf ->
+                _currentDelivery.clientCPF = cpf
+                tiClientCpf.error = requireContext().getErrorOrNull(getCPFErrorOrNull(cpf))
+            })
+        }
     }
 }

@@ -1,45 +1,93 @@
 package com.jessemanarim.entregaexpressa.feature_entrega.domain.validation
 
+import com.jessemanarim.entregaexpressa.R
 import com.jessemanarim.entregaexpressa.feature_entrega.data.model.Delivery
 
-fun isClientNameValid(delivery: Delivery): Boolean =
-    (!delivery.clientName.isNullOrEmpty() && !delivery.clientName.isNullOrBlank())
+fun getClientNameErrorOrNull(clientName: String?): Int? =
+    if(clientName.isNullOrEmpty() || clientName.isBlank())
+        R.string.error_empty_client_name
+    else
+        null
 
-fun isClientCPFValid(delivery: Delivery): Boolean =
-    (!delivery.clientCPF.isNullOrEmpty() && !delivery.clientCPF.isNullOrBlank())
+fun getCPFErrorOrNull(clientCPF: String?): Int? {
+    val numbers = clientCPF?.let {
+        it.replace(".", "").replace("-", "")
+    }
 
-fun isDeliveryCEPValid(delivery: Delivery): Boolean =
-    (!delivery.deliveryCEP.isNullOrEmpty() && !delivery.deliveryCEP.isNullOrBlank())
+    if(clientCPF.isNullOrEmpty() || clientCPF.isBlank())
+        return R.string.error_empty_cpf
 
-fun isDeliveryUFValid(delivery: Delivery): Boolean =
-    (!delivery.deliveryUF.isNullOrEmpty() && !delivery.deliveryUF.isNullOrBlank())
+    val rawCpf = clientCPF.toString()
+        .replace(".", "")
+        .replace("-", "")
+    if (rawCpf.length < 11)
+        return R.string.error_invalid_cpf
 
-fun isDeliveryCityValid(delivery: Delivery): Boolean =
-    (!delivery.deliveryCity.isNullOrEmpty() && !delivery.deliveryCity.isNullOrBlank())
+    val firstVerifierDigit = calculateVerifierDigit(numbers!!.substring(0, 9))
+    val secondVerifierDigit = calculateVerifierDigit(numbers!!.substring(0, 9) + firstVerifierDigit)
 
-fun isDeliveryDistrictValid(delivery: Delivery): Boolean =
-    (!delivery.deliveryDistrict.isNullOrEmpty() && !delivery.deliveryDistrict.isNullOrBlank())
+    if(isEveryCharacterEqual(numbers))
+        R.string.error_invalid_cpf
 
-fun isDeliveryStreetValid(delivery: Delivery): Boolean =
-    (!delivery.deliveryStreet.isNullOrEmpty() && !delivery.deliveryStreet.isNullOrBlank())
+    if(!clientCPF.endsWith("$firstVerifierDigit$secondVerifierDigit"))
+        return R.string.error_invalid_cpf
 
-fun isDeliveryNumberValid(delivery: Delivery): Boolean =
-    (!delivery.deliveryNumber.isNullOrEmpty() && !delivery.deliveryNumber.isNullOrBlank())
+    return null
+}
+fun getCEPErrorOrNull(deliveryCEP: String?): Int?  {
+    if((deliveryCEP.isNullOrEmpty() || deliveryCEP.isBlank()))
+        return R.string.error_empty_cep
 
-fun isDeliveryPackagesValid(delivery: Delivery): Boolean =
-    (!delivery.deliveryPackages.isNullOrEmpty() && !delivery.deliveryPackages.isNullOrBlank())
+    val rawCpf = deliveryCEP.toString().replace("-", "")
+    if (rawCpf.length < 8)
+        return R.string.error_invalid_cep
 
-fun isDeliveryLimitDateValid(delivery: Delivery): Boolean =
-    (!delivery.deliveryLimitDate.isNullOrEmpty() && !delivery.deliveryLimitDate.isNullOrBlank())
+    return null
+}
+
+fun getDeliveryUFErrorOrNull(deliveryUF: String?): Int? =
+    if(deliveryUF.isNullOrEmpty() || deliveryUF.isBlank()) R.string.error_empty_uf else null
+
+fun getDeliveryCityErrorOrNull(deliveryCity: String?): Int? =
+    if(deliveryCity.isNullOrEmpty() || deliveryCity.isBlank()) R.string.error_empty_city else null
+
+fun getDeliveryDistrictErrorOrNull(district: String?): Int? =
+    if(district.isNullOrEmpty() || district.isBlank()) R.string.error_empty_district else null
+
+fun getDeliveryStreetErrorOrNull(street: String?): Int? =
+    if(street.isNullOrEmpty() || street.isBlank()) R.string.error_empty_street else null
+
+fun getDeliveryNumberErrorOrNull(number: String?): Int? =
+    if (number.isNullOrEmpty() || number.isBlank()) R.string.error_empty_number else null
+
+fun getDeliveryPackagesErrorOrNull(packages: String?): Int? =
+    if(packages.isNullOrEmpty() || packages.isBlank()) R.string.error_empty_packages else null
+
+fun getDeliveryLimitDateErrorOrNull(limitDate: String?): Int? =
+    if(limitDate.isNullOrEmpty() || limitDate.isBlank()) R.string.error_empty_limit_date else null
 
 fun Delivery.isDeliveryValid(): Boolean =
-    isClientNameValid(this) &&
-    isClientCPFValid(this) &&
-    isDeliveryCEPValid(this) &&
-    isDeliveryUFValid(this) &&
-    isDeliveryCityValid(this) &&
-    isDeliveryDistrictValid(this) &&
-    isDeliveryStreetValid(this) &&
-    isDeliveryNumberValid(this) &&
-    isDeliveryPackagesValid(this) &&
-    isDeliveryLimitDateValid(this)
+    getClientNameErrorOrNull(this.clientName) == null &&
+    getCPFErrorOrNull(this.clientCPF) == null &&
+    getCEPErrorOrNull(this.deliveryCEP) == null &&
+    getDeliveryUFErrorOrNull(this.deliveryUF) == null &&
+    getDeliveryCityErrorOrNull(this.deliveryCity) == null &&
+    getDeliveryDistrictErrorOrNull(this.deliveryDistrict) == null &&
+    getDeliveryStreetErrorOrNull(this.deliveryStreet) == null &&
+    getDeliveryNumberErrorOrNull(this.deliveryNumber) == null &&
+    getDeliveryPackagesErrorOrNull(this.deliveryPackages) == null  &&
+    getDeliveryLimitDateErrorOrNull(this.deliveryLimitDate) == null
+
+private fun calculateVerifierDigit(numbers: String): Int {
+    var sum = 0
+    for (i in numbers.indices) {
+        sum += numbers[i].toString().toInt() * ((numbers.length+1) - i)
+    }
+    val remainder = sum % 11
+    return if (remainder < 2) 0 else 11 - remainder
+}
+
+fun isEveryCharacterEqual(input: String): Boolean {
+    return input.all { it == input[0] }
+}
+

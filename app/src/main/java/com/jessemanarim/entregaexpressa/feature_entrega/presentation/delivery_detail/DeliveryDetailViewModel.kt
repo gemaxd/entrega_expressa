@@ -1,20 +1,29 @@
-package com.jessemanarim.entregaexpressa.feature_entrega.presentation.delivery_create
+package com.jessemanarim.entregaexpressa.feature_entrega.presentation.delivery_detail
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.jessemanarim.entregaexpressa.feature_entrega.data.model.CitiesResponse
 import com.jessemanarim.entregaexpressa.feature_entrega.data.model.Delivery
 import com.jessemanarim.entregaexpressa.feature_entrega.domain.repository.DeliveryRepository
 import com.jessemanarim.entregaexpressa.feature_entrega.domain.validation.*
+import com.jessemanarim.entregaexpressa.feature_entrega.presentation.delivery_create.DeliveryCreationUiState
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.launch
 
-class DeliveryCreationViewModel(
+class DeliveryDetailViewModel(
     private val deliveryRepository: DeliveryRepository
 ): ViewModel() {
-    private val _uiState = MutableStateFlow<DeliveryCreationUiState>(DeliveryCreationUiState.Ready)
-    val uiState: StateFlow<DeliveryCreationUiState> = _uiState
+
+    private val _uiState = MutableStateFlow<DeliveryDetailUiState>(DeliveryDetailUiState.Ready)
+    val uiState: StateFlow<DeliveryDetailUiState> = _uiState
+
+    private val _fetchedDelivery = MutableLiveData<Delivery>()
+    val fetchedDelivery: LiveData<Delivery> = _fetchedDelivery
 
     private val _isClientNameValid = MutableLiveData<Int?>()
     val isClientNameValid: LiveData<Int?> = _isClientNameValid
@@ -50,9 +59,9 @@ class DeliveryCreationViewModel(
     val citiesResponse: LiveData<CitiesResponse?> = _citiesResponse
 
     suspend fun fetchCities(stateCode: String){
-        _uiState.value = DeliveryCreationUiState.Loading
+        _uiState.value = DeliveryDetailUiState.Loading
         val response = deliveryRepository.fetchCities(stateCode)
-        _uiState.value = DeliveryCreationUiState.Ready
+        _uiState.value = DeliveryDetailUiState.Ready
         _citiesResponse.postValue(
             if(response.failed)
                 null
@@ -63,8 +72,24 @@ class DeliveryCreationViewModel(
         )
     }
 
-    fun createDelivery(delivery: Delivery){
-        deliveryRepository.createDelivery(delivery)
+    fun fetchDeliveryInfo(deliveryId: Int) {
+        viewModelScope.launch {
+            _uiState.value = DeliveryDetailUiState.Loading
+            CoroutineScope(Dispatchers.IO).launch{
+                _fetchedDelivery.postValue(deliveryRepository.findDelivery(deliveryId = deliveryId))
+                _uiState.value = DeliveryDetailUiState.NotEditing
+            }
+        }
+    }
+
+    fun toggleFieldsInteraction(isEnabled: Boolean) {
+        _uiState.value = if(isEnabled) DeliveryDetailUiState.Editing else DeliveryDetailUiState.NotEditing
+    }
+
+    fun updateDelivery(delivery: Delivery){
+        CoroutineScope(Dispatchers.IO).launch {
+            deliveryRepository.updateDelivery(delivery = delivery)
+        }
     }
 
     fun validateClientName(delivery: Delivery){
