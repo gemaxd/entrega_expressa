@@ -28,6 +28,7 @@
         app:layout_constraintTop_toTopOf="parent">
 
         <ImageView
+            android:contentDescription="@string/no_itens_image_description"
             style="@style/ContentDivider.Text"
             android:id="@+id/iv_feedback_image"
             android:layout_width="wrap_content"
@@ -62,6 +63,7 @@
 
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:contentDescription="@string/add_item_button_description"
         android:id="@+id/fab"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

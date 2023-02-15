@@ -8,9 +8,8 @@ import com.jessemanarim.entregaexpressa.feature_entrega.data.model.CitiesRespons
 import com.jessemanarim.entregaexpressa.feature_entrega.data.model.Delivery
 import com.jessemanarim.entregaexpressa.feature_entrega.domain.repository.DeliveryRepository
 import com.jessemanarim.entregaexpressa.feature_entrega.domain.validation.*
-import com.jessemanarim.entregaexpressa.feature_entrega.presentation.delivery_create.DeliveryCreationUiState
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Dispatchers.IO
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
@@ -61,21 +60,20 @@ class DeliveryDetailViewModel(
     suspend fun fetchCities(stateCode: String){
         _uiState.value = DeliveryDetailUiState.Loading
         val response = deliveryRepository.fetchCities(stateCode)
+
         _uiState.value = DeliveryDetailUiState.Ready
         _citiesResponse.postValue(
-            if(response.failed)
-                null
+            if(response.isSuccessful)
+                CitiesResponse( cities = response.body )
             else
-                CitiesResponse(
-                    cities = response.body
-                )
+                null
         )
     }
 
     fun fetchDeliveryInfo(deliveryId: Int) {
         viewModelScope.launch {
             _uiState.value = DeliveryDetailUiState.Loading
-            CoroutineScope(Dispatchers.IO).launch{
+            CoroutineScope(IO).launch{
                 _fetchedDelivery.postValue(deliveryRepository.findDelivery(deliveryId = deliveryId))
                 _uiState.value = DeliveryDetailUiState.NotEditing
             }
@@ -87,7 +85,7 @@ class DeliveryDetailViewModel(
     }
 
     fun updateDelivery(delivery: Delivery){
-        CoroutineScope(Dispatchers.IO).launch {
+        CoroutineScope(IO).launch {
             deliveryRepository.updateDelivery(delivery = delivery)
         }
     }
@@ -96,11 +94,11 @@ class DeliveryDetailViewModel(
         _isClientNameValid.value = getClientNameErrorOrNull(delivery.clientName)
     }
 
-    fun validateClientCPF(delivery: Delivery){
+    private fun validateClientCPF(delivery: Delivery){
         _isClientCPFValid.value = getCPFErrorOrNull(delivery.clientCPF)
     }
 
-    fun validateDeliveryCEP(delivery: Delivery){
+    private fun validateDeliveryCEP(delivery: Delivery){
         _isDeliveryCEPValid.value = getCEPErrorOrNull(delivery.deliveryCEP)
     }
 

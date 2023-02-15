@@ -7,7 +7,6 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ArrayAdapter
 import android.widget.AutoCompleteTextView
-import androidx.core.view.isInvisible
 import androidx.core.view.isVisible
 import androidx.core.widget.doAfterTextChanged
 import androidx.fragment.app.Fragment
@@ -23,11 +22,12 @@ import com.jessemanarim.entregaexpressa.common.presentation.components.cpfMaskTe
 import com.jessemanarim.entregaexpressa.common.presentation.getErrorOrNull
 import com.jessemanarim.entregaexpressa.common.util.getCountryCode
 import com.jessemanarim.entregaexpressa.databinding.FragmentDeliveryDetailBinding
+import com.jessemanarim.entregaexpressa.feature_entrega.data.model.CitiesResponse
 import com.jessemanarim.entregaexpressa.feature_entrega.data.model.Delivery
 import com.jessemanarim.entregaexpressa.feature_entrega.domain.validation.getCEPErrorOrNull
 import com.jessemanarim.entregaexpressa.feature_entrega.domain.validation.getCPFErrorOrNull
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Dispatchers.IO
 import kotlinx.coroutines.launch
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import java.util.*
@@ -77,9 +77,12 @@ class DeliveryDetailFragment : Fragment() {
                         isEditing(isEnable = false)
                     }
                     is DeliveryDetailUiState.Editing -> {
+                        isLoading(isLoading = false)
                         isEditing(isEnable = true)
                     }
-                    else -> Unit
+                    is DeliveryDetailUiState.Ready -> {
+                        isLoading(isLoading = false)
+                    }
                 }
             }
         }
@@ -116,9 +119,10 @@ class DeliveryDetailFragment : Fragment() {
 
             ddClientUfType.setOnItemClickListener { adapterView, _, i, _ ->
                 _localDelivery.deliveryUF = adapterView.getItemAtPosition(i).toString()
+                _localDelivery.deliveryCity = null
                 _viewModel.validateDeliveryUF(_localDelivery)
                 ddClientCityType.setText("")
-                CoroutineScope(Dispatchers.IO).launch {
+                CoroutineScope(IO).launch {
                     _viewModel.fetchCities(adapterView.getItemAtPosition(i).toString())
                 }
             }
@@ -172,20 +176,24 @@ class DeliveryDetailFragment : Fragment() {
         _viewModel.citiesResponse.observe(viewLifecycleOwner) { cityResponse ->
             with(binding){
                 if(cityResponse == null){
-                    Snackbar.make(clGeneralData, "Houve um problema ao buscar as cidades", Snackbar.LENGTH_SHORT).show()
+                    Snackbar.make(clGeneralData, getString(R.string.error_fetching_cities), Snackbar.LENGTH_SHORT).show()
                 } else {
-                    ddClientCity.isEnabled = cityResponse.cities.isNotEmpty()
-                    val cityAdapter = ArrayAdapter(
-                        requireContext(),
-                        R.layout.list_item,
-                        cityResponse.cities.map { cityResponse -> cityResponse.name }
+                    (ddClientCity.editText as? AutoCompleteTextView)?.setAdapter(
+                        setupCitiesAdapter(cityResponse)
                     )
-                    (ddClientCity.editText as? AutoCompleteTextView)?.setAdapter(cityAdapter)
                 }
+                ddClientCityType.isEnabled = cityResponse != null && cityResponse.cities.isNotEmpty()
             }
         }
         validateErrors()
     }
+
+    private fun setupCitiesAdapter(response: CitiesResponse) =
+        ArrayAdapter(
+            requireContext(),
+            R.layout.list_item,
+            response.cities.map { cityResponse -> cityResponse.name }
+        )
 
     private fun fetchArguments(){
         arguments?.let {
@@ -196,6 +204,7 @@ class DeliveryDetailFragment : Fragment() {
 
     private fun populateFields(delivery: Delivery){
         with(binding){
+            tvDetailHeaderId.text = getString(R.string.detail_id_info, delivery.deliveryId)
             tiClientNameType.setText(delivery.clientName)
             tiClientCpfType.setText(delivery.clientCPF)
             tiClientCepType.setText(delivery.deliveryCEP)
@@ -212,13 +221,7 @@ class DeliveryDetailFragment : Fragment() {
 
     private fun isLoading(isLoading: Boolean = true){
         with(binding){
-            if(isLoading){
-                loadingView.isVisible = true
-                clGeneralContent.isInvisible = true
-            } else {
-                loadingView.isVisible = false
-                clGeneralContent.isInvisible = false
-            }
+            loadingView.isVisible = isLoading
         }
     }
 

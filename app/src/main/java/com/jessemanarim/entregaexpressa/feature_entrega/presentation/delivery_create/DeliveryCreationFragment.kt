@@ -21,11 +21,12 @@ import com.jessemanarim.entregaexpressa.common.presentation.components.cpfMaskTe
 import com.jessemanarim.entregaexpressa.common.presentation.getErrorOrNull
 import com.jessemanarim.entregaexpressa.common.util.getCountryCode
 import com.jessemanarim.entregaexpressa.databinding.FragmentDeliveryCreationBinding
+import com.jessemanarim.entregaexpressa.feature_entrega.data.model.CitiesResponse
 import com.jessemanarim.entregaexpressa.feature_entrega.data.model.Delivery
 import com.jessemanarim.entregaexpressa.feature_entrega.domain.validation.getCEPErrorOrNull
 import com.jessemanarim.entregaexpressa.feature_entrega.domain.validation.getCPFErrorOrNull
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Dispatchers.IO
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import org.koin.androidx.viewmodel.ext.android.viewModel
@@ -84,27 +85,32 @@ class DeliveryCreationFragment : Fragment() {
         _viewModel.citiesResponse.observe(viewLifecycleOwner) { cityResponse ->
             with(binding){
                 if(cityResponse == null){
-                    Snackbar.make(clGeneralData, "Houve um problema ao buscar as cidades", Snackbar.LENGTH_SHORT).show()
+                    Snackbar.make(clGeneralData, getString(R.string.error_fetching_cities), Snackbar.LENGTH_SHORT).show()
                 } else {
                     ddClientCity.isEnabled = cityResponse.cities.isNotEmpty()
-                    val cityAdapter = ArrayAdapter(
-                        requireContext(),
-                        R.layout.list_item,
-                        cityResponse.cities.map { cityResponse -> cityResponse.name }
+                    (ddClientCity.editText as? AutoCompleteTextView)?.setAdapter(
+                        setupCitiesAdapter(cityResponse)
                     )
-                    (ddClientCity.editText as? AutoCompleteTextView)?.setAdapter(cityAdapter)
                 }
+                ddClientCityType.isEnabled = cityResponse != null && cityResponse.cities.isNotEmpty()
             }
         }
         validateErrors()
     }
+
+    private fun setupCitiesAdapter(response: CitiesResponse) =
+        ArrayAdapter(
+            requireContext(),
+            R.layout.list_item,
+            response.cities.map { cityResponse -> cityResponse.name }
+        )
 
     @SuppressLint("SetTextI18n")
     private fun setupListeners(){
         with(binding){
             buttonSecond.setOnClickListener {
                 if(_viewModel.validateFields(_currentDelivery)){
-                    CoroutineScope(Dispatchers.IO).launch {
+                    CoroutineScope(IO).launch {
                         _viewModel.createDelivery(delivery = _currentDelivery)
                     }
                     findNavController().navigate(R.id.action_DeliveryCreationFragment_to_DeliveryListFragment)
@@ -122,9 +128,10 @@ class DeliveryCreationFragment : Fragment() {
 
             ddClientUfType.setOnItemClickListener { adapterView, _, i, _ ->
                 _currentDelivery.deliveryUF = adapterView.getItemAtPosition(i).toString()
+                _currentDelivery.deliveryCity = null
                 _viewModel.validateDeliveryUF(_currentDelivery)
                 ddClientCityType.setText("")
-                CoroutineScope(Dispatchers.IO).launch {
+                CoroutineScope(IO).launch {
                     _viewModel.fetchCities(adapterView.getItemAtPosition(i).toString())
                 }
             }

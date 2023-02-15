@@ -6,8 +6,6 @@ import androidx.navigation.findNavController
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.navigateUp
 import androidx.navigation.ui.setupActionBarWithNavController
-import android.view.Menu
-import android.view.MenuItem
 import com.jessemanarim.entregaexpressa.R
 import com.jessemanarim.entregaexpressa.databinding.ActivityMainBinding
 

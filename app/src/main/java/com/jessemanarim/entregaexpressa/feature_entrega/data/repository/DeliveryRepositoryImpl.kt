@@ -2,10 +2,9 @@ package com.jessemanarim.entregaexpressa.feature_entrega.data.repository
 
 import com.jessemanarim.entregaexpressa.EntregaExpressaDatabase
 import com.jessemanarim.entregaexpressa.feature_entrega.data.api.ApiService
-import com.jessemanarim.entregaexpressa.feature_entrega.data.model.CitiesResponse
 import com.jessemanarim.entregaexpressa.feature_entrega.data.model.City
-import com.jessemanarim.entregaexpressa.feature_entrega.data.model.SimpleResponse
 import com.jessemanarim.entregaexpressa.feature_entrega.data.model.Delivery
+import com.jessemanarim.entregaexpressa.feature_entrega.data.model.SimpleResponse
 import com.jessemanarim.entregaexpressa.feature_entrega.domain.repository.DeliveryRepository
 import retrofit2.Response
 

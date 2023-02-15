@@ -13,7 +13,7 @@ import com.jessemanarim.entregaexpressa.R
 import com.jessemanarim.entregaexpressa.databinding.FragmentDeliveryListBinding
 import com.jessemanarim.entregaexpressa.feature_entrega.data.model.Delivery
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Dispatchers.IO
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import org.koin.androidx.viewmodel.ext.android.viewModel
@@ -84,7 +84,7 @@ class DeliveriesListFragment : Fragment() {
         prepareAdapter()
     }
 
-    fun navigateToDetails(currentDelivery: Delivery){
+    private fun navigateToDetails(currentDelivery: Delivery){
         val bundle = Bundle()
         bundle.putInt("deliveryId", currentDelivery.deliveryId)
         findNavController().navigate(R.id.action_DeliveryListFragment_to_DeliveryDetailFragment, bundle)
@@ -93,8 +93,9 @@ class DeliveriesListFragment : Fragment() {
     private fun confirmRegisterExclusion(currentDelivery: Delivery){
         AlertDialog.Builder(requireContext())
             .setMessage(getString(R.string.confirm_exclusion_message))
-            .setPositiveButton(getString(R.string.yes)) { dialog, which ->
-                CoroutineScope(Dispatchers.IO).launch {
+            .setPositiveButton(getString(R.string.yes)) { _, _ ->
+                adapter.removeItem(currentDelivery)
+                CoroutineScope(IO).launch {
                     _viewModel.deleteDelivery(currentDelivery)
                 }
             }

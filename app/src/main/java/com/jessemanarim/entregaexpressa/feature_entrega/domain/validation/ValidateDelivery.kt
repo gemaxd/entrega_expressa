@@ -10,9 +10,7 @@ fun getClientNameErrorOrNull(clientName: String?): Int? =
         null
 
 fun getCPFErrorOrNull(clientCPF: String?): Int? {
-    val numbers = clientCPF?.let {
-        it.replace(".", "").replace("-", "")
-    }
+    val numbers = clientCPF?.replace(".", "")?.replace("-", "")
 
     if(clientCPF.isNullOrEmpty() || clientCPF.isBlank())
         return R.string.error_empty_cpf
@@ -24,7 +22,7 @@ fun getCPFErrorOrNull(clientCPF: String?): Int? {
         return R.string.error_invalid_cpf
 
     val firstVerifierDigit = calculateVerifierDigit(numbers!!.substring(0, 9))
-    val secondVerifierDigit = calculateVerifierDigit(numbers!!.substring(0, 9) + firstVerifierDigit)
+    val secondVerifierDigit = calculateVerifierDigit(numbers.substring(0, 9) + firstVerifierDigit)
 
     if(isEveryCharacterEqual(numbers))
         R.string.error_invalid_cpf

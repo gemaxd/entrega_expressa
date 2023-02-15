@@ -52,14 +52,13 @@ class DeliveryCreationViewModel(
     suspend fun fetchCities(stateCode: String){
         _uiState.value = DeliveryCreationUiState.Loading
         val response = deliveryRepository.fetchCities(stateCode)
+
         _uiState.value = DeliveryCreationUiState.Ready
         _citiesResponse.postValue(
-            if(response.failed)
-                null
+            if(response.isSuccessful)
+                CitiesResponse( cities = response.body )
             else
-                CitiesResponse(
-                    cities = response.body
-                )
+                null
         )
     }
 
@@ -69,14 +68,6 @@ class DeliveryCreationViewModel(
 
     fun validateClientName(delivery: Delivery){
         _isClientNameValid.value = getClientNameErrorOrNull(delivery.clientName)
-    }
-
-    fun validateClientCPF(delivery: Delivery){
-        _isClientCPFValid.value = getCPFErrorOrNull(delivery.clientCPF)
-    }
-
-    fun validateDeliveryCEP(delivery: Delivery){
-        _isDeliveryCEPValid.value = getCEPErrorOrNull(delivery.deliveryCEP)
     }
 
     fun validateDeliveryUF(delivery: Delivery){
@@ -105,6 +96,14 @@ class DeliveryCreationViewModel(
 
     fun validateDeliveryLimitDate(delivery: Delivery){
         _isDeliveryLimitDateValid.value = getDeliveryLimitDateErrorOrNull(delivery.deliveryLimitDate)
+    }
+
+    private fun validateClientCPF(delivery: Delivery){
+        _isClientCPFValid.value = getCPFErrorOrNull(delivery.clientCPF)
+    }
+
+    private fun validateDeliveryCEP(delivery: Delivery){
+        _isDeliveryCEPValid.value = getCEPErrorOrNull(delivery.deliveryCEP)
     }
 
     fun validateFields(delivery: Delivery): Boolean {

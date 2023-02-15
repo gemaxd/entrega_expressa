@@ -4,7 +4,7 @@ import androidx.lifecycle.ViewModel
 import com.jessemanarim.entregaexpressa.EntregaExpressaDatabase
 import com.jessemanarim.entregaexpressa.feature_entrega.data.model.Delivery
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Dispatchers.IO
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
@@ -21,7 +21,7 @@ class DeliveryListViewModel(
     }
 
     private fun showList(){
-        CoroutineScope(Dispatchers.IO).launch {
+        CoroutineScope(IO).launch {
             val list = database.deliveryDao().fetchAllDeliveries()
             if(list.isEmpty()){
                 _uiState.value = DeliveryListUiState.Empty

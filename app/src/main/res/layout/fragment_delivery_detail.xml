@@ -9,25 +9,36 @@
     android:layout_height="match_parent"
     tools:context=".feature_entrega.presentation.delivery_detail.DeliveryDetailFragment">
 
-    <ProgressBar
-        android:id="@+id/loading_view"
-        android:visibility="gone"
-        android:layout_width="100dp"
-        android:layout_height="100dp"
-        android:progressTint="@color/purple_700"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/container_detail_data"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toTopOf="@id/cl_general_content"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent">
+
+        <TextView
+            android:id="@+id/tv_detail_header_id"
+            style="@style/DetailIdInfo"
+            tools:text="Entrega de ID #27"
+            android:layout_margin="@dimen/small_margin"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"/>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/cl_general_content"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="0dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
+        app:layout_constraintTop_toBottomOf="@id/container_detail_data">
 
         <ScrollView
             android:layout_width="match_parent"
@@ -54,7 +65,7 @@
                         android:layout_width="0dp"
                         app:errorEnabled="true"
                         android:layout_height="wrap_content"
-                        android:hint="Nome do cliente"
+                        android:hint="@string/client_name_hint"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toTopOf="parent">
@@ -70,7 +81,7 @@
                         style="@style/StandardOutlineTextField"
                         android:id="@+id/ti_client_cpf"
                         android:layout_width="0dp"
-                        android:hint="CPF"
+                        android:hint="@string/client_cpf_hint"
                         android:layout_height="wrap_content"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
@@ -109,7 +120,7 @@
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         app:errorEnabled="true"
-                        android:hint="CEP"
+                        android:hint="@string/delivery_cep_hint"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toBottomOf="@+id/address_divider">
@@ -133,7 +144,7 @@
                         app:layout_constraintTop_toBottomOf="@id/ti_client_cep"
                         app:layout_constraintEnd_toStartOf="@id/dd_client_city"
                         app:layout_constraintHorizontal_weight="3.5"
-                        android:hint="UF">
+                        android:hint="@string/uf">
 
                         <AutoCompleteTextView
                             android:id="@+id/dd_client_uf_type"
@@ -155,7 +166,7 @@
                         app:layout_constraintTop_toBottomOf="@id/ti_client_cep"
                         app:layout_constraintStart_toEndOf="@id/dd_client_uf"
                         app:layout_constraintHorizontal_weight="9"
-                        android:hint="CIDADE">
+                        android:hint="@string/cidade">
 
                         <AutoCompleteTextView
                             android:id="@+id/dd_client_city_type"
@@ -175,7 +186,7 @@
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintTop_toBottomOf="@id/dd_client_uf"
-                        android:hint="BAIRRO">
+                        android:hint="@string/bairro">
 
                         <com.google.android.material.textfield.TextInputEditText
                             android:id="@+id/ti_client_district_type"
@@ -194,7 +205,7 @@
                         app:layout_constraintTop_toBottomOf="@id/ti_client_district"
                         app:layout_constraintEnd_toStartOf="@id/ti_client_address_number"
                         app:layout_constraintHorizontal_weight="7"
-                        android:hint="RUA">
+                        android:hint="@string/rua">
 
                         <com.google.android.material.textfield.TextInputEditText
                             android:id="@+id/ti_client_street_type"
@@ -213,7 +224,7 @@
                         app:layout_constraintTop_toBottomOf="@id/ti_client_district"
                         app:layout_constraintStart_toEndOf="@id/ti_client_street"
                         app:layout_constraintHorizontal_weight="3"
-                        android:hint="NUMERO">
+                        android:hint="@string/numero">
 
                         <com.google.android.material.textfield.TextInputEditText
                             android:id="@+id/ti_client_address_number_type"
@@ -231,7 +242,7 @@
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintTop_toBottomOf="@id/ti_client_street"
-                        android:hint="COMPLEMENTO">
+                        android:hint="@string/complemento">
 
                         <com.google.android.material.textfield.TextInputEditText
                             android:id="@+id/ti_client_complement_type"
@@ -262,7 +273,7 @@
                         android:id="@+id/ti_package_quantity"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        android:hint="PACOTES"
+                        android:hint="@string/pacotes"
                         style="@style/StandardOutlineTextField"
                         app:errorEnabled="true"
                         app:layout_constraintEnd_toStartOf="@+id/dp_limit_date"
@@ -281,7 +292,7 @@
                         android:id="@+id/dp_limit_date"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        android:hint="DATA LIMITE"
+                        android:hint="@string/data_limite_hint"
                         style="@style/StandardOutlineTextField"
                         app:errorEnabled="true"
                         app:layout_constraintStart_toEndOf="@id/ti_package_quantity"
@@ -347,6 +358,16 @@
                 app:layout_constraintStart_toStartOf="parent"/>
 
         </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <ProgressBar
+            android:visibility="gone"
+            android:id="@+id/loading_view"
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

@@ -4,8 +4,6 @@ import com.google.gson.annotations.SerializedName
 import retrofit2.Response
 
 data class City(
-    @SerializedName("id")
-    val id: Int,
     @SerializedName("nome")
     val name: String
 )
@@ -42,11 +40,8 @@ data class SimpleResponse<T> (
         object Failure: Status()
     }
 
-    val failed: Boolean
-        get() = this.status == Status.Failure
-
     val isSuccessful: Boolean
-        get() = !failed && this.data?.isSuccessful == true
+        get() = this.data?.isSuccessful == true
 
     val body: T
         get() = this.data!!.body()!!

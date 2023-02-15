@@ -41,5 +41,22 @@
     <string name="confirm_exclusion_message">Tem certeza que deseja excluir esse registro?</string>
     <string name="yes">Sim</string>
     <string name="no">Não</string>
+    <string name="client_name_hint">Nome do cliente</string>
+    <string name="client_cpf_hint">CPF do Cliente</string>
+    <string name="delivery_cep_hint">CEP do Cliente</string>
+    <string name="uf">UF</string>
+    <string name="cidade">CIDADE</string>
+    <string name="bairro">BAIRRO</string>
+    <string name="rua">RUA</string>
+    <string name="numero">NUMERO</string>
+    <string name="complemento">COMPLEMENTO</string>
+    <string name="pacotes">PACOTES</string>
+    <string name="data_limite_hint">DATA LIMITE</string>
+    <string name="detail_id_info">Entrega de ID #%1$d</string>
+    <string name="id_adapter_item_info">#%1$d</string>
+    <string name="error_fetching_cities">Houve um problema ao buscar as cidades</string>
+    <string name="delete_button_description">Botão com ação para deletar item das entregas</string>
+    <string name="no_itens_image_description">Imagem que representa a falta de entregas na lista</string>
+    <string name="add_item_button_description">Botão flutante para adição de um novo item</string>
 
 </resources>

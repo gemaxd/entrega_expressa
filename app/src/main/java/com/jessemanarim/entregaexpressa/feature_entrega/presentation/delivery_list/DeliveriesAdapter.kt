@@ -1,5 +1,6 @@
 package com.jessemanarim.entregaexpressa.feature_entrega.presentation.delivery_list
 
+import android.annotation.SuppressLint
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -22,6 +23,7 @@ class DeliveriesAdapter (
         val deliveryQuantity: TextView = itemView.findViewById(R.id.tv_quantity)
         val limitDate: TextView = itemView.findViewById(R.id.tv_limit_date)
         val deleteButton: ImageButton = itemView.findViewById(R.id.btn_delete)
+        val regionValue: TextView = itemView.findViewById(R.id.tv_region)
         val container: ConstraintLayout = itemView.findViewById(R.id.container_item)
     }
 
@@ -32,6 +34,7 @@ class DeliveriesAdapter (
         return ViewHolder(contactView)
     }
 
+    @SuppressLint("SetTextI18n")
     override fun onBindViewHolder(viewHolder: DeliveriesAdapter.ViewHolder, position: Int) {
         val delivery: Delivery = mDeliveries[position]
 
@@ -39,25 +42,25 @@ class DeliveriesAdapter (
         val clientName = viewHolder.clientName
         val quantity = viewHolder.deliveryQuantity
         val limitDate = viewHolder.limitDate
+        val regionValue = viewHolder.regionValue
         val btnDelete = viewHolder.deleteButton
         val container = viewHolder.container
 
-        deliveryId.text = delivery.deliveryId.toString()
+        deliveryId.text = "#${delivery.deliveryId}"
         clientName.text = delivery.clientName
-        quantity.text = delivery.deliveryPackages
+        quantity.text = "${delivery.deliveryPackages} Pcs."
         limitDate.text = delivery.deliveryLimitDate
+        regionValue.text = "${delivery.deliveryCity} / ${delivery.deliveryUF}"
         btnDelete.setOnClickListener {
             deleteClick(delivery)
-            removeItem(position)
         }
         container.setOnClickListener {
             openDetailClick(delivery)
         }
     }
 
-    fun removeItem(position: Int) {
-        mDeliveries.drop(position)
-        notifyItemRemoved(position)
+    fun removeItem(delivery: Delivery) {
+        notifyItemRemoved(mDeliveries.indexOf(delivery))
     }
 
     override fun getItemCount(): Int {

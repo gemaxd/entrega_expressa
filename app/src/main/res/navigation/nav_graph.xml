@@ -22,7 +22,7 @@
             <argument
                 android:name="deliveryId"
                 android:defaultValue="0"
-                app:argType="integer"/>
+                app:argType="integer" />
 
         </action>
     </fragment>
